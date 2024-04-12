@@ -1,6 +1,6 @@
-import os
-import nextcord
+import os, nextcord
 from nextcord.ext import commands
+from dbot.cogs.prefix import Prefix
 
 
 class Client:
@@ -9,7 +9,7 @@ class Client:
         Initialization for the Discord Bot
         """
         self.client = commands.Bot(
-            command_prefix="!",
+            command_prefix=Prefix().get_prefix,
             intents=nextcord.Intents.all(),
             owner_ids=[int(i) for i in os.getenv("bot.ownerids").split(",")],
             case_insensitive=True,
