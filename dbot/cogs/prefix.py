@@ -1,4 +1,4 @@
-import nextcord
+import nextcord, requests
 from nextcord.ext import commands
 from dbot.classes.database import Database
 
@@ -6,32 +6,32 @@ from dbot.classes.database import Database
 class Prefix(commands.Cog):
     def __init__(self, bot):
         self.client = bot
-        self.db = Database().getConn()
-        self.cursor = Database().getCursor()
+        self.db = Database.url()
+        self.default_prefix = "!"
 
     def get_prefix(self, message):
-        default_prefix = "!"
         if isinstance(message.channel, nextcord.DMChannel):
-            return default_prefix
+            return self.default_prefix
         else:
             guild_id = message.guild.id
-            self.cursor.execute("SELECT prefix FROM prefixes WHERE guild_id=?", (guild_id,))
-            result = self.cursor.fetchone()
-            return result[0] if result else default_prefix
+            r = requests.get(f"{self.db}/get_prefix?guildid={guild_id}")
+            return r.json()["prefix"] if r.status_code == 200 else self.default_prefix
 
-    @nextcord.ui.slash_command(name="setprefix", description="Set a custom prefix for the server.")
+    @nextcord.ui.slash_command(
+        name="setprefix", description="Set a custom prefix for the server."
+    )
     @commands.has_permissions(administrator=True)
     async def setprefix(self, ctx: nextcord.ui.Context, prefix: str):
         guild_id = ctx.guild.id
-        self.cursor.execute(
-            "REPLACE INTO prefixes (guild_id, prefix) VALUES (?, ?)", (guild_id, prefix)
-        )
-        self.db.commit()
-        await ctx.send(f"Prefix set to {prefix}")
 
-    async def on_guild_join(self, guild):
-        self.cursor.execute("INSERT INTO prefixes (guild_id, prefix) VALUES (?, ?)", (guild.id, "!"))
-        self.db.commit()
+        r = requests.put(f"{self.db}/put_prefix?guildid={guild_id}&prefix={prefix}")
+        return await ctx.send(f"Prefix set to {prefix}") if r.status_code == 200 else await ctx.send("An error occurred. Please contact support")
+
+    async def prefix_on_guild_join(self, guild):
+        guild_id = guild.id
+        r = requests.post(f"{self.db}/post_prefix?guildid={guild_id}&prefix={self.default_prefix}")
+        return r.status_code == 200
+
 
 def setup(bot):
     bot.add_cog(Prefix(bot))
