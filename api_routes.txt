@@ -1,0 +1,4 @@
+- prefix.py -
+(get)  /api/get_prefix?guildid={}                      
+(post) /api/post_prefix?guildid={}&prefix={}           
+(put)  /api/put_prefix?guildid={}&prefix={}             
