@@ -1,20 +1,27 @@
-import requests as req, os
+import os, requests as req
 
 class Api:
     def __init__(self):
-        self.url = os.getenv('api.url')
-
-    def checkConnection(self):
-        """
-        Check if the API is reachable
-        :return: True if the API is reachable, False otherwise
-        """
-        status = req.get(self.url).status_code
-        return True if status == 200 else False
+        self.url = os.getenv("api.url")
 
     def getUrl(self):
         """
-        Get the API URL
-        :return: The API URL if the API is reachable, None otherwise
+        Get the URL for the bot's dashboard
         """
-        return self.url if self.checkConnection() else None
+        return self.url
+    
+    def getPrefix(self, guild_id):
+        """
+        Request: GET
+        Get the prefix for the server
+        Args: guild_id (int)
+        """
+        return f"{self.url}/{guild_id}/get_prefix"
+    
+    def setPrefix(self, guild_id, prefix):
+        """
+        Request: POST
+        Set the prefix for the server
+        Args: guild_id (int), prefix (str)
+        """
+        return f"{self.url}/{guild_id}/set_prefix/{prefix}"

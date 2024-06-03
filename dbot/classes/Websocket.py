@@ -18,6 +18,9 @@ class Websocket:
                 if data.get('type') == "update_command":
                     guild_id = data.get('guild_id')
                     await self.update_commands_for_guild(guild_id)
+                elif data.get('type') == "update_prefix":
+                    guild_id = data.get('guild_id')
+                    await self.update_prefix_for_guild(guild_id)
 
     async def update_commands_for_guild(self, guild_id):
         """
