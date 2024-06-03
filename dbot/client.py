@@ -1,8 +1,10 @@
 import os
 import nextcord
+import requests as req
 from nextcord.ext import commands
-from dbot.cogs.prefix import Prefix
+from dbot.classes.Prefix import Prefix
 from dbot.classes.Websocket import Websocket
+
 
 class Client:
     def __init__(self):
@@ -17,7 +19,7 @@ class Client:
             case_insensitive=True,
             help_command=None,
         )
-        self.websocket(self.client)
+        self.websocket = Websocket(self.client)
 
     async def setup(self):
         """
@@ -25,7 +27,7 @@ class Client:
         """
         os.system("cls" if os.name == "nt" else "clear")
         print("Starting bot...")
-        self.websocket.start()
+        self.client.loop.create_task(self.websocket.start())
         self.client.add_listener(self.on_ready)
         await self.loadCogs()
         await self.run()
@@ -34,12 +36,14 @@ class Client:
         """
         Load all cogs
         """
-        for root, _, files in os.walk('./dbot/cogs'):
+        for root, _, files in os.walk("./dbot/cogs"):
             for filename in files:
-                if filename.endswith('.py'):
+                if filename.endswith(".py"):
                     try:
-                        path = os.path.join(root, filename)[len("./dbot/cogs/"):][:-3].replace(os.path.sep, '.')
-                        self.client.load_extension(f'dbot.cogs.{path}')
+                        path = os.path.join(root, filename)[len("./dbot/cogs/") :][
+                            :-3
+                        ].replace(os.path.sep, ".")
+                        self.client.load_extension(f"dbot.cogs.{path}")
                         print(f"Loaded cog: {filename[:-3]}")
                     except Exception as e:
                         print(f"Error loading cog {filename[:-3]}: {e}")
@@ -59,7 +63,7 @@ class Client:
 
 Logged in as:       {self.client.user}
 ID:                 {self.client.user.id}
-Prefix:             {self.client.command_prefix}
+Prefix:             {os.getenv('bot.prefix')}
 Guilds:             {len(self.client.guilds)}
 Total members:      {len(self.client.users)}
 Cogs Loaded:        {len(self.client.cogs)}

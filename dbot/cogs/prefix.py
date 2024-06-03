@@ -1,7 +1,7 @@
 import nextcord, requests as req, asyncio, os
 from nextcord.ext import commands
-from dbot.classes.Api import Api
 from aiohttp import web
+
 
 class Prefix(commands.Cog):
     def __init__(self, bot):
@@ -11,31 +11,27 @@ class Prefix(commands.Cog):
         self.client = bot
         self.api = os.getenv("api.url")
 
-    def get_prefix(self, message):
-        """
-        Get the prefix for the server
-        """
-        default_prefix = "!"
-        if isinstance(message.channel, nextcord.DMChannel):
-            return default_prefix
-        else:
-            guild_id = message.guild.id
-            r = req.get(f"{self.api}/guilds/{guild_id}")
-            return r.json()['prefix'] if r.status_code == 200 else default_prefix
-        
-
-    @nextcord.ui.slash_command(
-        name="setprefix", description="Set a custom prefix for the server."
+    @nextcord.slash_command(
+        name="setprefix",
+        description="Set a custom prefix for the server.",
+        default_member_permissions=nextcord.Permissions(administrator=True),
     )
-    @commands.has_permissions(administrator=True)
-    async def setprefix(self, ctx: nextcord.ui.Context, prefix: str):
+    async def setprefix(self, interaction: nextcord.Interaction, prefix: str):
         """
         Set a custom prefix for the server
         """
-        guild_id = ctx.guild.id
-        r = req.put(f"{self.api}/guilds/{guild_id}", json={"prefix": prefix})
+        guild_id = interaction.guild.id
+        headers = {"Authorization": f"Bearer {os.getenv('api.key')}"}
+        response = req.put(
+            f"{self.api}/guilds/{guild_id}", json={"prefix": prefix}, headers=headers
+        )
 
-        await ctx.send(f"Prefix set to {prefix}") if r.status_code == 200 else await ctx.send("An error occurred.")
+        if response.status_code == 200:
+            await interaction.response.send_message(f"Prefix set to {prefix}")
+        else:
+            await interaction.response.send_message(
+                "An error occurred.", ephemeral=True
+            )
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -43,7 +39,14 @@ class Prefix(commands.Cog):
         Set the default prefix for the server
         """
         r = req.put(f"{self.api}/guilds/{guild.id}", json={"prefix": "!"})
-        print(f"An error occured while setting the default prefix for guild: {guild.name} - {guild.id}.") if r.status_code != 200 else None
+        (
+            print(
+                f"An error occured while setting the default prefix for guild: {guild.name} - {guild.id}."
+            )
+            if r.status_code != 200
+            else None
+        )
+
 
 def setup(bot):
     bot.add_cog(Prefix(bot))
