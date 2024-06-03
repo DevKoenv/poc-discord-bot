@@ -1,9 +1,13 @@
-import nextcord
+import nextcord, requests, asyncio, os
 from nextcord.ext import commands
 from dbot.classes.Api import Api
+from aiohttp import web
 
 class Prefix(commands.Cog):
     def __init__(self, bot):
+        """
+        This class is used to set a custom prefix for the server.
+        """
         self.client = bot
         self.api = Api.getUrl()
 
@@ -31,8 +35,12 @@ class Prefix(commands.Cog):
         self.api.setPrefix(guild_id, prefix)
         await ctx.send(f"Prefix set to {prefix}")
 
+    @commands.Cog.listener()
     async def on_guild_join(self, guild):
         """
         Set the default prefix for the server
         """
         self.api.setPrefix(guild.id, "!")
+
+def setup(bot):
+    bot.add_cog(Prefix(bot))

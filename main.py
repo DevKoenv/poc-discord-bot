@@ -1,5 +1,5 @@
-from dbot.client import Client
 import asyncio
+from dbot.client import Client
 from dotenv import load_dotenv
 
 load_dotenv()

@@ -10,7 +10,7 @@ class Client:
         Initialization for the Discord Bot
         """
         self.client = commands.Bot(
-            command_prefix=Prefix().get_prefix,
+            command_prefix=Prefix.get_prefix,
             intents=nextcord.Intents.all(),
             owner_ids=[int(i) for i in os.getenv("bot.ownerids").split(",")],
             case_insensitive=True,
