@@ -31,7 +31,6 @@ class Client:
         self.client.loop.create_task(self.websocket.start())
         self.client.add_listener(self.on_ready)
         await self.loadCogs()
-        await self.loadPrefixes()
         await self.run()
 
     async def loadCogs(self):

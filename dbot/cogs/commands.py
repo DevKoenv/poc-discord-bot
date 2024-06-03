@@ -18,12 +18,14 @@ class Commands(commands.Cog):
         """
         if message.author.bot:
             return
-        
+
         prefix = Api().get_prefix(message)
         if not message.content.startswith(prefix):
             return
         
-        command = Api().get_command(message)
+        command = Api().get_command(message, prefix)
         if command:
             await message.channel.send(command["response"])
 
+def setup(bot):
+    bot.add_cog(Commands(bot))
