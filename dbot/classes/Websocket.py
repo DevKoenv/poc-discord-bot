@@ -1,9 +1,8 @@
 import os
 import json
-import websockets
 import aiohttp
 import asyncio
-
+import socketio
 
 class Websocket:
     def __init__(self, bot):
@@ -11,28 +10,31 @@ class Websocket:
         self.api = os.getenv("api.url")
         self.websocket_url = os.getenv("websocket.url")
         self.api_key = os.getenv("api.key")
+        self.sio = socketio.AsyncClient()
 
-    async def websocket_listener(self):
+    async def start(self):
         """
-        Listen to WebSocket for real-time command updates
+        Start the WebSocket listener
         """
-        while True:
-            try:
-                async with websockets.connect(self.websocket_url) as websocket:
-                    async for message in websocket:
-                        data = json.loads(message)
-                        if data.get("type") == "update_command":
-                            guild_id = data.get("guild_id")
-                            await self.update_commands_for_guild(guild_id)
-                        elif data.get("type") == "update_prefix":
-                            guild_id = data.get("guild_id")
-                            await self.update_prefix_for_guild(guild_id)
-            except websockets.ConnectionClosed:
-                print("WebSocket connection closed. Reconnecting...")
-                await asyncio.sleep(5)
-            except Exception as e:
-                print(f"Unexpected error: {e}")
-                await asyncio.sleep(5)
+        self.sio.on('update_command', self.handle_update_command)
+        self.sio.on('update_prefix', self.handle_update_prefix)
+        await self.sio.connect(self.websocket_url)
+
+    async def handle_update_command(self, data):
+        """
+        Handle update command event
+        """
+        guild_id = data.get("guild_id")
+        if guild_id:
+            await self.update_commands_for_guild(guild_id)
+
+    async def handle_update_prefix(self, data):
+        """
+        Handle update prefix event
+        """
+        guild_id = data.get("guild_id")
+        if guild_id:
+            await self.update_prefix_for_guild(guild_id)
 
     async def update_commands_for_guild(self, guild_id):
         """

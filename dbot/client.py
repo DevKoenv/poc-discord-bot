@@ -17,7 +17,7 @@ class Client:
             case_insensitive=True,
             help_command=None,
         )
-        self.websocket_handler = Websocket(self.client)
+        self.websocket(self.client)
 
     async def setup(self):
         """
@@ -25,8 +25,8 @@ class Client:
         """
         os.system("cls" if os.name == "nt" else "clear")
         print("Starting bot...")
+        self.websocket.start()
         self.client.add_listener(self.on_ready)
-        self.client.loop.create_task(self.websocket_handler.websocket_listener())
         await self.loadCogs()
         await self.run()
 

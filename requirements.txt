@@ -1,4 +1,5 @@
 python-dotenv
 nextcord
 requests
-websockets
+python-socketio[asyncio_client]
+aiohttp
