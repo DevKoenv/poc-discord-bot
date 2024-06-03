@@ -3,7 +3,7 @@ import json
 import websockets
 import aiohttp
 
-class Commands:
+class Websocket:
     def __init__(self, bot):
         self.bot = bot
         self.websocket_url = os.getenv("websocket.url")
@@ -39,3 +39,13 @@ class Commands:
                     await ctx.send(command_data['response'])
                 new_command.__name__ = command_data['name']
                 self.bot.command(name=command_data['name'])(new_command)
+
+    async def update_prefix_for_guild(self, guild_id):
+        """
+        Update prefix for a specific guild
+        """
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'{os.getenv("api.url")}/prefix/{guild_id}') as response:
+                prefix = await response.text()
+
+        self.bot.command_prefix = prefix

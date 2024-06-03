@@ -1,7 +1,7 @@
 import os, nextcord
 from nextcord.ext import commands
 from dbot.cogs.prefix import Prefix
-from dbot.classes.Commands import Commands
+from dbot.classes.Websocket import Websocket
 
 
 class Client:
@@ -16,7 +16,7 @@ class Client:
             case_insensitive=True,
             help_command=None,
         )
-        self.websocket_handler = Commands(self.client)
+        self.websocket_handler = Websocket(self.client)
 
     async def setup(self):
         """
