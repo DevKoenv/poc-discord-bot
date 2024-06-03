@@ -1,16 +1,17 @@
-import os, nextcord
+import os
+import nextcord
 from nextcord.ext import commands
 from dbot.cogs.prefix import Prefix
 from dbot.classes.Websocket import Websocket
-
 
 class Client:
     def __init__(self):
         """
         Initialization for the Discord Bot
         """
+        self.prefix_manager = Prefix()
         self.client = commands.Bot(
-            command_prefix=Prefix.get_prefix,
+            command_prefix=self.prefix_manager.get_prefix,
             intents=nextcord.Intents.all(),
             owner_ids=[int(i) for i in os.getenv("bot.ownerids").split(",")],
             case_insensitive=True,
@@ -28,7 +29,7 @@ class Client:
         self.client.loop.create_task(self.websocket_handler.websocket_listener())
         await self.loadCogs()
         await self.run()
-        
+
     async def loadCogs(self):
         """
         Load all cogs
@@ -42,7 +43,6 @@ class Client:
                         print(f"Loaded cog: {filename[:-3]}")
                     except Exception as e:
                         print(f"Error loading cog {filename[:-3]}: {e}")
-
 
     async def run(self):
         """

@@ -1,4 +1,4 @@
-import nextcord, requests, asyncio, os
+import nextcord, requests as req, asyncio, os
 from nextcord.ext import commands
 from dbot.classes.Api import Api
 from aiohttp import web
@@ -9,7 +9,7 @@ class Prefix(commands.Cog):
         This class is used to set a custom prefix for the server.
         """
         self.client = bot
-        self.api = Api.getUrl()
+        self.api = os.getenv("api.url")
 
     def get_prefix(self, message):
         """
@@ -20,7 +20,8 @@ class Prefix(commands.Cog):
             return default_prefix
         else:
             guild_id = message.guild.id
-            return self.api.getPrefix(guild_id)
+            r = req.get(f"{self.api}/guilds/{guild_id}")
+            return r.json()['prefix'] if r.status_code == 200 else default_prefix
         
 
     @nextcord.ui.slash_command(
@@ -32,15 +33,17 @@ class Prefix(commands.Cog):
         Set a custom prefix for the server
         """
         guild_id = ctx.guild.id
-        self.api.setPrefix(guild_id, prefix)
-        await ctx.send(f"Prefix set to {prefix}")
+        r = req.put(f"{self.api}/guilds/{guild_id}", json={"prefix": prefix})
+
+        await ctx.send(f"Prefix set to {prefix}") if r.status_code == 200 else await ctx.send("An error occurred.")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         """
         Set the default prefix for the server
         """
-        self.api.setPrefix(guild.id, "!")
+        r = req.put(f"{self.api}/guilds/{guild.id}", json={"prefix": "!"})
+        print(f"An error occured while setting the default prefix for guild: {guild.name} - {guild.id}.") if r.status_code != 200 else None
 
 def setup(bot):
     bot.add_cog(Prefix(bot))
