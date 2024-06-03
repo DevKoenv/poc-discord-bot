@@ -27,6 +27,7 @@ class Prefix(commands.Cog):
         )
 
         if response.status_code == 200:
+            self.client.command_prefix = prefix
             await interaction.response.send_message(f"Prefix set to {prefix}")
         else:
             await interaction.response.send_message(

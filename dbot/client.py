@@ -2,7 +2,7 @@ import os
 import nextcord
 import requests as req
 from nextcord.ext import commands
-from dbot.classes.Prefix import Prefix
+from dbot.classes.Api import Api
 from dbot.classes.Websocket import Websocket
 
 
@@ -11,7 +11,7 @@ class Client:
         """
         Initialization for the Discord Bot
         """
-        self.prefix_manager = Prefix()
+        self.prefix_manager = Api()
         self.client = commands.Bot(
             command_prefix=self.prefix_manager.get_prefix,
             intents=nextcord.Intents.all(),
@@ -20,6 +20,7 @@ class Client:
             help_command=None,
         )
         self.websocket = Websocket(self.client)
+        self.api = os.getenv("api.url")
 
     async def setup(self):
         """
@@ -30,6 +31,7 @@ class Client:
         self.client.loop.create_task(self.websocket.start())
         self.client.add_listener(self.on_ready)
         await self.loadCogs()
+        await self.loadPrefixes()
         await self.run()
 
     async def loadCogs(self):
@@ -72,3 +74,5 @@ Commands:           {len(self.client.get_all_application_commands())}
 Bot is ready!
 """
         )
+
+
