@@ -32,6 +32,7 @@ class Prefix(commands.Cog):
             await interaction.response.send_message(
                 "An error occurred.", ephemeral=True
             )
+            print(f"Error setting prefix for guild {guild_id}: {response.status_code}\n{response.text}")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
