@@ -1,34 +1,38 @@
 import nextcord
 from nextcord.ext import commands
-from dbot.classes.database import Database
-
+from dbot.classes.Api import Api
 
 class Prefix(commands.Cog):
     def __init__(self, bot):
         self.client = bot
-        self.db = Database().getConn()
-        self.cursor = Database().getCursor()
+        self.api = Api.getUrl()
 
     def get_prefix(self, message):
+        """
+        Get the prefix for the server
+        """
         default_prefix = "!"
         if isinstance(message.channel, nextcord.DMChannel):
             return default_prefix
         else:
             guild_id = message.guild.id
-            self.cursor.execute("SELECT prefix FROM prefixes WHERE guild_id=?", (guild_id,))
-            result = self.cursor.fetchone()
-            return result[0] if result else default_prefix
+            return self.api.getPrefix(guild_id)
+        
 
-    @nextcord.ui.slash_command(name="setprefix", description="Set a custom prefix for the server.")
+    @nextcord.ui.slash_command(
+        name="setprefix", description="Set a custom prefix for the server."
+    )
     @commands.has_permissions(administrator=True)
     async def setprefix(self, ctx: nextcord.ui.Context, prefix: str):
+        """
+        Set a custom prefix for the server
+        """
         guild_id = ctx.guild.id
-        self.cursor.execute(
-            "REPLACE INTO prefixes (guild_id, prefix) VALUES (?, ?)", (guild_id, prefix)
-        )
-        self.db.commit()
+        self.api.setPrefix(guild_id, prefix)
         await ctx.send(f"Prefix set to {prefix}")
 
     async def on_guild_join(self, guild):
-        self.cursor.execute("INSERT INTO prefixes (guild_id, prefix) VALUES (?, ?)", (guild.id, "!"))
-        self.db.commit()
+        """
+        Set the default prefix for the server
+        """
+        self.api.setPrefix(guild.id, "!")

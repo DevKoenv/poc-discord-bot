@@ -1,6 +1,7 @@
 import os, nextcord
 from nextcord.ext import commands
 from dbot.cogs.prefix import Prefix
+from dbot.classes.Commands import Commands
 
 
 class Client:
@@ -15,6 +16,7 @@ class Client:
             case_insensitive=True,
             help_command=None,
         )
+        self.websocket_handler = Commands(self.client)
 
     async def setup(self):
         """
@@ -23,9 +25,10 @@ class Client:
         os.system("cls" if os.name == "nt" else "clear")
         print("Starting bot...")
         self.client.add_listener(self.on_ready)
+        self.client.loop.create_task(self.websocket_handler.websocket_listener())
         await self.loadCogs()
         await self.run()
-
+        
     async def loadCogs(self):
         """
         Load all cogs
