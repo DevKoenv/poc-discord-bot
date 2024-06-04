@@ -1,6 +1,7 @@
 import nextcord, requests as req, asyncio, os
 from nextcord.ext import commands
 from aiohttp import web
+from dbot.classes.Logger import Logger
 
 
 class Prefix(commands.Cog):
@@ -10,6 +11,7 @@ class Prefix(commands.Cog):
         """
         self.client = bot
         self.api = os.getenv("api.url")
+        self.logger = Logger()
 
     @nextcord.slash_command(
         name="setprefix",
@@ -33,7 +35,7 @@ class Prefix(commands.Cog):
             await interaction.response.send_message(
                 "An error occurred.", ephemeral=True
             )
-            print(
+            self.logger.error(
                 f"Error setting prefix for guild {guild_id}: {response.status_code}\n{response.text}"
             )
 
@@ -44,7 +46,7 @@ class Prefix(commands.Cog):
         """
         r = req.put(f"{self.api}/guilds/{guild.id}", json={"prefix": os.getenv('bot.prefix')}, headers={"Authorization": f"Bearer {os.getenv('api.key')}"})
         (
-            print(
+            self.logger.error(
                 f"An error occured while setting the default prefix for guild: {guild.name} - {guild.id}.\n{r.text}"
             )
             if r.status_code != 200

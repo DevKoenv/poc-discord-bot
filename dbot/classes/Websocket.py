@@ -3,6 +3,7 @@ import json
 import aiohttp
 import asyncio
 import socketio
+from dbot.classes.Logger import Logger
 
 class Websocket:
     def __init__(self, bot):
@@ -11,6 +12,7 @@ class Websocket:
         self.websocket_url = os.getenv("websocket.url")
         self.api_key = os.getenv("api.key")
         self.sio = socketio.AsyncClient()
+        self.logger = Logger()
 
     async def start(self):
         """
@@ -47,7 +49,7 @@ class Websocket:
                 if response.status == 200:
                     commands = await response.json()
                 else:
-                    print(
+                    self.logger.error(
                         f"Failed to fetch commands for guild {guild_id}: {response.status}"
                     )
                     return
@@ -83,6 +85,6 @@ class Websocket:
                     if guild:
                         await guild.me.edit(nick=f"{self.client.user.name} | {prefix}")
                 else:
-                    print(
+                    self.logger.error(
                         f"Failed to fetch guild data for guild {guild_id}: {response.status}"
                     )

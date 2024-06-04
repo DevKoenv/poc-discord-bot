@@ -4,6 +4,7 @@ import requests as req
 from nextcord.ext import commands
 from dbot.classes.Api import Api
 from dbot.classes.Websocket import Websocket
+from dbot.classes.Logger import Logger
 
 
 class Client:
@@ -21,6 +22,7 @@ class Client:
         )
         self.websocket = Websocket(self.client)
         self.api = os.getenv("api.url")
+        self.logger = Logger()
 
     async def setup(self):
         """
@@ -73,5 +75,6 @@ Commands:           {len(self.client.get_all_application_commands())}
 Bot is ready!
 """
         )
+        self.logger.debug("Bot is ready!")
 
 

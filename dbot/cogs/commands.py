@@ -27,5 +27,15 @@ class Commands(commands.Cog):
         if command:
             await message.channel.send(command["response"])
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        """
+        Handle command errors
+        """
+        if isinstance(error, commands.errors.CommandNotFound):
+            return
+
+        await ctx.send(f"An error occurred: {error}")
+
 def setup(bot):
     bot.add_cog(Commands(bot))

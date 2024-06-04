@@ -7,7 +7,7 @@ class Api:
     def __init__(self):
         self.api = os.getenv("api.url")
         self.headers = {"Authorization": f"Bearer {os.getenv('api.key')}"}
-        self.client = None  # Client will be set later
+        self.client = None 
 
     def get_prefix(self, message=None, *args, **kwargs):
         """
@@ -24,8 +24,7 @@ class Api:
                 return r.json()["prefix"] if r.status_code == 200 else default_prefix
 
         return default_prefix
-    
-    
+
 
     def get_command(self, message=None, prefix=None, *args, **kwargs):
         """
