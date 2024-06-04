@@ -6,7 +6,7 @@ import socketio
 
 class Websocket:
     def __init__(self, bot):
-        self.bot = bot
+        self.client = bot
         self.api = os.getenv("api.url")
         self.websocket_url = os.getenv("websocket.url")
         self.api_key = os.getenv("api.key")
@@ -53,10 +53,10 @@ class Websocket:
                     return
 
         # Remove all existing commands for the guild
-        guild = self.bot.get_guild(guild_id)
+        guild = self.client.get_guild(guild_id)
         if guild:
-            for command in list(self.bot.commands):
-                self.bot.remove_command(command.name)
+            for command in list(self.client.commands):
+                self.client.remove_command(command.name)
 
             # Add new commands
             for command_data in commands:
@@ -65,7 +65,7 @@ class Websocket:
                     await ctx.send(command_data["response"])
 
                 new_command.__name__ = command_data["trigger"]
-                self.bot.command(name=command_data["trigger"])(new_command)
+                self.client.command(name=command_data["trigger"])(new_command)
 
     async def update_prefix_for_guild(self, guild_id):
         """
@@ -78,7 +78,10 @@ class Websocket:
                 if response.status == 200:
                     guild_data = await response.json()
                     prefix = guild_data["prefix"]
-                    self.bot.command_prefix = prefix
+                    self.client.command_prefix = prefix
+                    guild = self.client.get_guild(guild_id)
+                    if guild:
+                        await guild.me.edit(nick=f"{self.client.user.name} | {prefix}")
                 else:
                     print(
                         f"Failed to fetch guild data for guild {guild_id}: {response.status}"

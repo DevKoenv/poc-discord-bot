@@ -27,26 +27,31 @@ class Prefix(commands.Cog):
         )
 
         if response.status_code == 200:
+            await self.client.get_guild(guild_id).me.edit(nick=f"{self.client.user.name} | {prefix}")
             await interaction.response.send_message(f"Prefix set to {prefix}")
         else:
             await interaction.response.send_message(
                 "An error occurred.", ephemeral=True
             )
-            print(f"Error setting prefix for guild {guild_id}: {response.status_code}\n{response.text}")
+            print(
+                f"Error setting prefix for guild {guild_id}: {response.status_code}\n{response.text}"
+            )
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         """
         Set the default prefix for the server
         """
-        r = req.put(f"{self.api}/guilds/{guild.id}", json={"prefix": "!"})
+        r = req.put(f"{self.api}/guilds/{guild.id}", json={"prefix": os.getenv('bot.prefix')}, headers={"Authorization": f"Bearer {os.getenv('api.key')}"})
         (
             print(
-                f"An error occured while setting the default prefix for guild: {guild.name} - {guild.id}."
+                f"An error occured while setting the default prefix for guild: {guild.name} - {guild.id}.\n{r.text}"
             )
             if r.status_code != 200
             else None
         )
+
+        await guild.me.edit(nick=f"{self.client.user.name} | {os.getenv('bot.prefix')}")
 
 
 def setup(bot):
