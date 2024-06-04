@@ -4,6 +4,7 @@ import aiohttp
 import asyncio
 import socketio
 from dbot.classes.Logger import Logger
+import nextcord
 
 class Websocket:
     def __init__(self, bot):
@@ -20,7 +21,16 @@ class Websocket:
         """
         self.sio.on('update_command', self.handle_update_command)
         self.sio.on('update_prefix', self.handle_update_prefix)
-        await self.sio.connect(self.websocket_url)
+        try:
+            await self.sio.connect(self.websocket_url)
+        except:
+            self.logger.error("Failed to connect to the WebSocket server")
+            activity = nextcord.Activity(type=nextcord.ActivityType.watching, name="Dashboard offline")  # Change type and name as desired
+            await self.client.change_presence(activity=activity, status=nextcord.Status.dnd)
+            await asyncio.sleep(20)
+            await self.start()
+            return
+        self.logger.info("Connected to WebSocket server")
 
     async def handle_update_command(self, data):
         """

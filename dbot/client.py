@@ -61,6 +61,8 @@ class Client:
         """
         Function to execute when bot is ready
         """
+        activity = nextcord.Activity(type=nextcord.ActivityType.listening, name="/help")
+        await self.client.change_presence(activity=activity, status=nextcord.Status.online)
         print(
             f"""
 
