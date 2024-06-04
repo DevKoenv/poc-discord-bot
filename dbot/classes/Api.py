@@ -24,6 +24,8 @@ class Api:
                 return r.json()["prefix"] if r.status_code == 200 else default_prefix
 
         return default_prefix
+    
+    
 
     def get_command(self, message=None, prefix=None, *args, **kwargs):
         """
