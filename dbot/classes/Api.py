@@ -39,5 +39,5 @@ class Api:
                     commands = r.json()
                     for command in commands:
                         if message.content[len(prefix):] == command["trigger"]:
-                            return command
+                            return command['response']
         return None

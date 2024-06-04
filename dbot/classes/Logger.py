@@ -9,7 +9,7 @@ class Logger:
         handler.setFormatter(logging.Formatter(f"{datetime.now().strftime("%H:%M:%S")} - %(levelname)s: %(message)s"))
         self.logger.addHandler(handler)
 
-    def log(self, message):
+    def info(self, message):
         self.logger.info(message)
 
     def error(self, message):

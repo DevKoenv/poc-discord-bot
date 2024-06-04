@@ -7,7 +7,7 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.client = bot
 
-    @nextcord.slash_command()
+    @nextcord.slash_command(name="invite", description="Generates an bot invite")
     async def invite(self, interaction: nextcord.Interaction):
         """
         Link to the bot's invite
@@ -17,7 +17,7 @@ class Utility(commands.Cog):
             ephemeral=True,
         )
 
-    @nextcord.slash_command()
+    @nextcord.slash_command(name="dashboard", description="Link to the bot's dashboard")
     async def dashboard(self, interaction: nextcord.Interaction):
         """
         Link to the bot's dashboard
@@ -26,7 +26,7 @@ class Utility(commands.Cog):
             os.getenv("dashboard.url"), ephemeral=True
         )
 
-    @nextcord.slash_command()
+    @nextcord.slash_command(name="help", description="Display's the bot help message")
     async def help(self, interaction: nextcord.Interaction):
         """
         Display's the bot help message
@@ -55,7 +55,6 @@ class Utility(commands.Cog):
         )
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
-
 
 def setup(bot):
     bot.add_cog(Utility(bot))
