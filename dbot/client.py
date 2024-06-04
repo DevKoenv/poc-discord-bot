@@ -77,6 +77,6 @@ Commands:           {len(self.client.get_all_application_commands())}
 Bot is ready!
 """
         )
-        self.logger.debug("Bot is ready!")
+        self.logger.info("Bot is ready!")
 
 

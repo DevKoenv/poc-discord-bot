@@ -25,7 +25,7 @@ class Websocket:
             await self.sio.connect(self.websocket_url)
         except:
             self.logger.error("Failed to connect to the WebSocket server")
-            activity = nextcord.Activity(type=nextcord.ActivityType.watching, name="Dashboard offline")  # Change type and name as desired
+            activity = nextcord.Activity(type=nextcord.ActivityType.watching, name="Dashboard offline")
             await self.client.change_presence(activity=activity, status=nextcord.Status.dnd)
             await asyncio.sleep(20)
             await self.start()
@@ -36,6 +36,7 @@ class Websocket:
         """
         Handle update command event
         """
+        print("update command")
         guild_id = data.get("guild_id")
         if guild_id:
             await self.update_commands_for_guild(guild_id)
@@ -44,6 +45,7 @@ class Websocket:
         """
         Handle update prefix event
         """
+        print("update prefix")
         guild_id = data.get("guild_id")
         if guild_id:
             await self.update_prefix_for_guild(guild_id)

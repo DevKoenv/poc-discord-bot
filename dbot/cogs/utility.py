@@ -45,7 +45,10 @@ class Utility(commands.Cog):
 
         avatar = self.client.user.avatar
         if avatar is None:
-            avatar = os.getenv('bot.avatar')
+            if interaction.user.avatar is None:
+                avatar = nextcord.DefaultAvatar.blurple
+            else:
+                avatar = interaction.user.avatar.url
         else:
             avatar = self.client.user.avatar.url
 
