@@ -3,7 +3,6 @@ import nextcord
 import requests as req
 from nextcord.ext import commands
 from dbot.classes.Api import Api
-from dbot.classes.Websocket import Websocket
 from dbot.classes.Logger import Logger
 
 
@@ -20,7 +19,6 @@ class Client:
             case_insensitive=True,
             help_command=None,
         )
-        self.websocket = Websocket(self.client)
         self.api = os.getenv("api.url")
         self.logger = Logger()
 
@@ -30,7 +28,6 @@ class Client:
         """
         os.system("cls" if os.name == "nt" else "clear")
         print("Starting bot...")
-        self.client.loop.create_task(self.websocket.start())
         self.client.add_listener(self.on_ready)
         await self.loadCogs()
         await self.run()
