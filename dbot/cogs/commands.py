@@ -1,4 +1,4 @@
-import nextcord, requests as req, asyncio, os
+import nextcord, requests as req, asyncio, os, json
 from nextcord.ext import commands
 from aiohttp import web
 from dbot.classes.Api import Api
@@ -42,6 +42,45 @@ class Commands(commands.Cog):
 		self.client = bot
 		self.api = os.getenv("api.url")
 
+	@nextcord.slash_command(
+		name="newcommand",
+		description="Create a new command for the server.",
+		default_member_permissions=nextcord.Permissions(administrator=True),
+	)
+	async def newcommand(self, interaction: nextcord.Interaction, name: str, content: str):
+		"""
+		Create a new command for the server
+		"""
+		if not name or not content:
+			await interaction.response.send_message("Please provide a name and content for the command.", ephemeral=True)
+			return
+		
+		guild_id = interaction.guild.id
+		r = req.get(f"{self.api}/guilds/{guild_id}/commands", headers={"Authorization": f"Bearer {os.getenv('api.key')}"})
+		if r.status_code == 200:
+			commands = r.json()
+			for command in commands:
+				if name == command['trigger']:
+					await interaction.response.send_message("Command already exists.", ephemeral=True)
+					return
+				
+		headers = {"Authorization": f"Bearer {os.getenv('api.key')}"}
+		json = {
+			"trigger": name, 
+			"response": {
+				'content': content, 
+				'embeds': [], 
+				'components': []
+				}
+			}
+		response = req.post(f"{self.api}/guilds/{guild_id}/commands", json=json, headers=headers)
+		if response.status_code == 200:
+			returnEmbed = nextcord.Embed(title=f"Command Created", description=f"Want to add more to the command? Go to the [dashboard]({os.getenv('dashboard.url')})!")
+			returnEmbed.add_field(name="Name", value=name, inline=False)
+			returnEmbed.add_field(name="Content", value=content, inline=False)
+			await interaction.response.send_message(embed=returnEmbed)
+		else:
+			print(response.text)
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
