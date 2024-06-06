@@ -11,9 +11,9 @@ class Client:
         """
         Initialization for the Discord Bot
         """
-        self.prefix_manager = Api()
+        self.apiClass = Api()
         self.client = commands.Bot(
-            command_prefix=self.prefix_manager.get_prefix,
+            command_prefix=self.apiClass.get_prefix,
             intents=nextcord.Intents.all(),
             owner_ids=[int(i) for i in os.getenv("bot.ownerids").split(",")],
             case_insensitive=True,
@@ -27,10 +27,23 @@ class Client:
         Setup the discord bot
         """
         os.system("cls" if os.name == "nt" else "clear")
+        print('API connecting...')
+        await self.connectApi()
         print("Starting bot...")
         self.client.add_listener(self.on_ready)
         await self.loadCogs()
         await self.run()
+
+    async def connectApi(self):
+        """
+        Connect to the api
+        """
+        if not self.apiClass.test_connection():
+            print("Failed to connect to the api")
+            self.logger.error("Failed to connect to the api")
+            exit(1)
+        print("API connected!\n")
+        self.logger.info("Connected to the api")
 
     async def loadCogs(self):
         """
