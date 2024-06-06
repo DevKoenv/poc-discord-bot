@@ -46,25 +46,25 @@ class Socket(commands.Cog):
 			await self.socket_send(f"{self.client.user.name} left {guild.name}")
 
 	@commands.Cog.listener()
-    async def on_guild_update(self, before, after):
-        """
-        Send a message to the socket server when a guild is updated
-        """
-        if self.sio.connected:
-            changes = []
+	async def on_guild_update(self, before, after):
+		"""
+		Send a message to the socket server when a guild is updated
+		"""
+		if self.sio.connected:
+			changes = []
 
-            if before.name != after.name:
-                changes.append(f"changed name to {after.name}")
-            if before.icon != after.icon:
-                changes.append("changed icon")
-            if before.banner != after.banner:
-                changes.append("changed banner")
-            if before.owner != after.owner:
-                changes.append("changed owner")
+			if before.name != after.name:
+				changes.append(f"changed name to {after.name}")
+			if before.icon != after.icon:
+				changes.append("changed icon")
+			if before.banner != after.banner:
+				changes.append("changed banner")
+			if before.owner != after.owner:
+				changes.append("changed owner")
 
-            if changes:
-                message = f"{before.name} " + ", ".join(changes)
-                await self.socket_send(message)
+			if changes:
+				message = f"{before.name} " + ", ".join(changes)
+				await self.socket_send(message)
 
 
 def setup(bot):
