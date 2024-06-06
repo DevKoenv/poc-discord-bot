@@ -2,21 +2,30 @@ import logging
 from datetime import datetime
 
 class Logger:
-    def __init__(self):
-        self.logger = logging.getLogger("discord_bot")
-        self.logger.setLevel(logging.DEBUG)
-        handler = logging.FileHandler(filename=f"dbot/logs/{(datetime.now()).strftime("%d-%m-%Y")}.log", encoding="utf-8", mode="w")
-        handler.setFormatter(logging.Formatter(f"{datetime.now().strftime("%H:%M:%S")} - %(levelname)s: %(message)s"))
-        self.logger.addHandler(handler)
+	_instance = None
 
-    def info(self, message):
-        self.logger.info(message)
+	def __new__(cls):
+		if cls._instance is None:
+			cls._instance = super(Logger, cls).__new__(cls)
+			cls._instance._initialize()
+		return cls._instance
 
-    def error(self, message):
-        self.logger.error(message)
+	def _initialize(self):
+		self.logger = logging.getLogger("discord_bot")
+		if not self.logger.handlers:
+			self.logger.setLevel(logging.DEBUG)
+			handler = logging.FileHandler(filename=f"dbot/logs/{datetime.now().strftime('%d-%m-%Y')}.log", encoding="utf-8", mode="a+")
+			handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s: %(message)s', datefmt='%H:%M:%S'))
+			self.logger.addHandler(handler)
 
-    def debug(self, message):
-        self.logger.debug(message)
+	def info(self, message):
+		self.logger.info(message)
 
-    def warning(self, message):
-        self.logger.warning(message)
+	def error(self, message):
+		self.logger.error(message)
+
+	def debug(self, message):
+		self.logger.debug(message)
+
+	def warning(self, message):
+		self.logger.warning(message)
