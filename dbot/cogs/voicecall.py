@@ -9,22 +9,22 @@ class VoiceCall(commands.Cog):
         self.bot = bot
         self.botHandling = BotHandling()
         self.musicHandling = MusicHandling()
-        self.enabledVoice = None
+        self.enabledMusicPlay = None
 
-    def checkEnabledVoice(self):
-        if self.enabledVoice is None:
-            # TODO: Check if the bot is in a voice channel with API
-            self.enabledVoice = True
-        return self.enabledVoice
+    def checkMusicPlay(self):
+        if self.enabledMusicPlay is None:
+            # TODO: Check if the bot is allowed to play music with API
+            self.enabledMusicPlay = True
+        return self.enabledMusicPlay
 
     @nextcord.slash_command(name="join", description="Joins a voice channel")
     async def join(self, interaction: nextcord.Interaction):
         """
         Joins a voice channel
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -36,9 +36,9 @@ class VoiceCall(commands.Cog):
         """
         Leaves a voice channel
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -50,9 +50,9 @@ class VoiceCall(commands.Cog):
         """
         Plays a song
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -64,9 +64,9 @@ class VoiceCall(commands.Cog):
         """
         Pauses the current song
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -78,9 +78,9 @@ class VoiceCall(commands.Cog):
         """
         Resumes the current song
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -92,9 +92,9 @@ class VoiceCall(commands.Cog):
         """
         Stops the current song
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -106,9 +106,9 @@ class VoiceCall(commands.Cog):
         """
         Skips the current song
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -120,9 +120,9 @@ class VoiceCall(commands.Cog):
         """
         Shows the current queue
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -134,9 +134,9 @@ class VoiceCall(commands.Cog):
         """
         Clears the current queue
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -148,9 +148,9 @@ class VoiceCall(commands.Cog):
         """
         Loops the current song
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -162,9 +162,9 @@ class VoiceCall(commands.Cog):
         """
         Shuffles the current queue
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -176,9 +176,9 @@ class VoiceCall(commands.Cog):
         """
         Removes a song from the queue
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -192,9 +192,9 @@ class VoiceCall(commands.Cog):
         """
         Shows the lyrics of the current song
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
@@ -208,9 +208,9 @@ class VoiceCall(commands.Cog):
         """
         Plays a song next in the queue
         """
-        if self.enabledVoice is None:
-            self.checkEnabledVoice()
-        if self.enabledVoice is False:
+        if self.enabledMusicPlay is None:
+            self.checkMusicPlay()
+        if self.enabledMusicPlay is False:
             await interaction.response.send(
                 f"Voice feature is disabled. Go to the [dashboard]({os.getenv('dashboard.url')})"
             )
