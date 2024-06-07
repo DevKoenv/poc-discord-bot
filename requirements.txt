@@ -1,2 +1,5 @@
 python-dotenv
 nextcord
+requests
+python-socketio[asyncio_client]
+aiohttp
