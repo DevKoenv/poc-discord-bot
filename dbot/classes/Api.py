@@ -13,7 +13,7 @@ class Api:
         """
         Test the connection to the API
         """
-        r = req.get(f"{self.api}/users/me", headers=self.headers)
+        r = req.get(f"{self.api}/users/@me", headers=self.headers)
         return r.status_code == 200
 
     def get_prefix(self, message=None, *args, **kwargs):
