@@ -1,7 +1,7 @@
 import nextcord, requests as req, os
 from nextcord.ext import commands
-from dbot.classes.voice.bot_handling import BotHandling
-from dbot.classes.voice.music_handling import MusicHandling
+from dbot.classes.voicecall.BotHandling import BotHandling
+from dbot.classes.voicecall.MusicHandling import MusicHandling
 
 
 class VoiceCall(commands.Cog):
